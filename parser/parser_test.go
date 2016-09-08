@@ -32,7 +32,6 @@ var expected store.Document = store.Document{
 }
 
 func TestParserType(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Type != expected.Type {
@@ -41,7 +40,6 @@ func TestParserType(t *testing.T) {
 }
 
 func TestParserForum(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Forum != expected.Forum {
@@ -50,7 +48,6 @@ func TestParserForum(t *testing.T) {
 }
 
 func TestParserForumTitle(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.ForumTitle != expected.ForumTitle {
@@ -59,7 +56,6 @@ func TestParserForumTitle(t *testing.T) {
 }
 
 func TestParserDiscussionTitle(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.DiscussionTitle != expected.DiscussionTitle {
@@ -68,7 +64,6 @@ func TestParserDiscussionTitle(t *testing.T) {
 }
 
 func TestParserLanguage(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Language != expected.Language {
@@ -77,7 +72,6 @@ func TestParserLanguage(t *testing.T) {
 }
 
 func TestParserGMTOffset(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.GMTOffset != expected.GMTOffset {
@@ -86,7 +80,6 @@ func TestParserGMTOffset(t *testing.T) {
 }
 
 func TestParserTopicURL(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.TopicURL != expected.TopicURL {
@@ -95,7 +88,6 @@ func TestParserTopicURL(t *testing.T) {
 }
 
 func TestParserTopicText(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if !strings.Contains(doc.TopicText, expected.TopicText) {
@@ -104,7 +96,6 @@ func TestParserTopicText(t *testing.T) {
 }
 
 func TestParserSpamScore(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.SpamScore != expected.SpamScore {
@@ -113,7 +104,6 @@ func TestParserSpamScore(t *testing.T) {
 }
 
 func TestParserPostNum(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.PostNum != expected.PostNum {
@@ -122,7 +112,6 @@ func TestParserPostNum(t *testing.T) {
 }
 
 func TestParserPostID(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.PostID != expected.PostID {
@@ -131,7 +120,6 @@ func TestParserPostID(t *testing.T) {
 }
 
 func TestParserPostURL(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.PostURL != expected.PostURL {
@@ -140,7 +128,6 @@ func TestParserPostURL(t *testing.T) {
 }
 
 func TestParserPostDate(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.PostDate != expected.PostDate {
@@ -149,7 +136,6 @@ func TestParserPostDate(t *testing.T) {
 }
 
 func TestParserPostTime(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.PostTime != expected.PostTime {
@@ -158,7 +144,6 @@ func TestParserPostTime(t *testing.T) {
 }
 
 func TestParserUsername(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Username != expected.Username {
@@ -167,7 +152,6 @@ func TestParserUsername(t *testing.T) {
 }
 
 func TestParserPost(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if !strings.Contains(doc.Post, expected.Post) {
@@ -176,7 +160,6 @@ func TestParserPost(t *testing.T) {
 }
 
 func TestParserSignature(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Signature != expected.Signature {
@@ -185,7 +168,6 @@ func TestParserSignature(t *testing.T) {
 }
 
 func TestParserExternalLinks(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.ExternalLinks != expected.ExternalLinks {
@@ -194,7 +176,6 @@ func TestParserExternalLinks(t *testing.T) {
 }
 
 func TestParserCountry(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.Country != expected.Country {
@@ -203,7 +184,6 @@ func TestParserCountry(t *testing.T) {
 }
 
 func TestParserMainImage(t *testing.T) {
-
 	doc := parser.ParseXML("test.xml")
 
 	if doc.MainImage != expected.MainImage {

@@ -1,18 +1,21 @@
 package main
 
 import (
-	//"os"
+	"os"
 
 	"github.com/lukashambsch/news-parser/parser"
 	"github.com/lukashambsch/news-parser/scraper"
+	"github.com/lukashambsch/news-parser/store"
 )
 
 const URL = "http://feed.omgili.com/5Rh5AMTrc4Pv/mainstream/posts/"
 
 func main() {
-	//os.RemoveAll(scraper.XMLDir)
-	//os.RemoveAll(scraper.ZipDir)
+	defer store.Store.Close()
+	os.RemoveAll(scraper.XMLDir)
+	os.RemoveAll(scraper.ZipDir)
 
 	//scraper.Scrape(URL)
-	parser.ParseXML(scraper.XMLDir + "/fff067a03ddd6953c090621c4fa137a0.xml")
+	doc := parser.ParseXML("parser/test.xml")
+	store.SetDocument(doc)
 }

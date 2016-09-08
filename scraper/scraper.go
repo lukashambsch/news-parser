@@ -1,0 +1,137 @@
+package scraper
+
+import (
+	"archive/zip"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+)
+
+const XMLDir = "xmls"
+const ZipDir = "zips"
+
+func Scrape(URL string) {
+	chFinished := make(chan bool)
+	paths := GetZipLinks(URL)
+
+	for i, path := range paths[0:5] {
+		fmt.Println(fmt.Sprintf("Downloading file %d at %s", i+1, path))
+
+		split := strings.Split(path, "/")
+		zipPath := split[len(split)-1]
+		go Download(path, fmt.Sprintf("%s/%s", ZipDir, zipPath), chFinished)
+	}
+
+	for count := 0; count < len(paths[0:5]); {
+		select {
+		case <-chFinished:
+			fmt.Println(fmt.Sprintf("Finished downloading file %d.", count+1))
+			count++
+		}
+	}
+}
+
+func Download(path string, zipPath string, chFinished chan bool) {
+	defer func() {
+		chFinished <- true
+	}()
+
+	os.Mkdir(ZipDir, 0700)
+	out, err := os.Create(zipPath)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer out.Close()
+
+	response, err := http.Get(path)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer response.Body.Close()
+
+	io.Copy(out, response.Body)
+
+	split := strings.Split(zipPath, "/")
+	dirName := strings.Replace(split[len(split)-1], ".zip", "", 1)
+	outputPath := fmt.Sprintf("%s/%s", XMLDir, dirName)
+	Unzip(zipPath, outputPath)
+}
+
+func GetZipLinks(URL string) []string {
+	var hrefs []string
+	doc, _ := goquery.NewDocument(URL)
+
+	doc.Find("table tr td a").Each(func(i int, s *goquery.Selection) {
+		href, _ := s.Attr("href")
+
+		if strings.Contains(href, "zip") {
+			hrefs = append(hrefs, fmt.Sprintf("%s%s", URL, href))
+		}
+	})
+	return hrefs
+}
+
+func Unzip(src, dest string) error {
+	r, err := zip.OpenReader(src)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err := r.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	os.MkdirAll(dest, 0755)
+
+	// Closure to address file descriptors issue with all the deferred .Close() methods
+	extractAndWriteFile := func(f *zip.File) error {
+		rc, err := f.Open()
+		if err != nil {
+			return err
+		}
+		defer func() {
+			if err := rc.Close(); err != nil {
+				panic(err)
+			}
+		}()
+
+		path := filepath.Join(dest, f.Name)
+
+		if f.FileInfo().IsDir() {
+			os.MkdirAll(path, f.Mode())
+		} else {
+			os.MkdirAll(filepath.Dir(path), f.Mode())
+			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+			if err != nil {
+				return err
+			}
+			defer func() {
+				if err := f.Close(); err != nil {
+					panic(err)
+				}
+			}()
+
+			_, err = io.Copy(f, rc)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	for _, f := range r.File {
+		err := extractAndWriteFile(f)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

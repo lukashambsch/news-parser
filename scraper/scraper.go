@@ -81,11 +81,7 @@ func Unzip(src, dest string) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if err := r.Close(); err != nil {
-			panic(err)
-		}
-	}()
+	defer r.Close()
 
 	os.MkdirAll(dest, 0755)
 
@@ -95,11 +91,7 @@ func Unzip(src, dest string) error {
 		if err != nil {
 			return err
 		}
-		defer func() {
-			if err := rc.Close(); err != nil {
-				panic(err)
-			}
-		}()
+		defer rc.Close()
 
 		path := filepath.Join(dest, f.Name)
 
@@ -111,11 +103,7 @@ func Unzip(src, dest string) error {
 			if err != nil {
 				return err
 			}
-			defer func() {
-				if err := f.Close(); err != nil {
-					panic(err)
-				}
-			}()
+			defer f.Close()
 
 			_, err = io.Copy(f, rc)
 			if err != nil {

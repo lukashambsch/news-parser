@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -17,30 +18,25 @@ const XMLDir = "xmls"
 const ZipDir = "zips"
 
 func Scrape(URL string) {
-	chFinished := make(chan bool)
+	var wg sync.WaitGroup
+	throttle := make(chan int, 5)
 	paths := GetZipLinks(URL)
 
-	for i, path := range paths[0:5] {
+	for i, path := range paths {
 		fmt.Println(fmt.Sprintf("Downloading file %d at %s", i+1, path))
 
 		split := strings.Split(path, "/")
 		zipPath := split[len(split)-1]
-		go Download(path, fmt.Sprintf("%s/%s", ZipDir, zipPath), chFinished)
-	}
 
-	for count := 0; count < len(paths[0:5]); {
-		select {
-		case <-chFinished:
-			fmt.Println(fmt.Sprintf("Finished downloading file %d.", count+1))
-			count++
-		}
+		throttle <- 1
+		wg.Add(1)
+		go Download(path, fmt.Sprintf("%s/%s", ZipDir, zipPath), &wg, throttle)
 	}
+	wg.Wait()
 }
 
-func Download(path string, zipPath string, chFinished chan bool) {
-	defer func() {
-		chFinished <- true
-	}()
+func Download(path string, zipPath string, wg *sync.WaitGroup, throttle chan int) {
+	defer wg.Done()
 
 	os.Mkdir(ZipDir, 0700)
 	out, err := os.Create(zipPath)
@@ -61,6 +57,9 @@ func Download(path string, zipPath string, chFinished chan bool) {
 	dirName := strings.Replace(split[len(split)-1], ".zip", "", 1)
 	outputPath := fmt.Sprintf("%s/%s", XMLDir, dirName)
 	Unzip(zipPath, outputPath)
+
+	fmt.Println(fmt.Sprintf("Finished downloading %s", path))
+	<-throttle
 }
 
 func GetZipLinks(URL string) []string {

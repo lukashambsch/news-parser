@@ -3,9 +3,24 @@ package parser
 import (
 	"encoding/xml"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/lukashambsch/news-parser/models"
+	"github.com/lukashambsch/news-parser/store"
 )
+
+func visit(path string, f os.FileInfo, err error) error {
+	if strings.Contains(path, ".xml") {
+		post := ParseXML(path)
+		store.SetPost(post)
+	}
+	return nil
+}
+
+func ParseAllXML(src string) {
+	filepath.Walk(src, visit)
+}
 
 func ParseXML(path string) models.Post {
 	var post models.Post

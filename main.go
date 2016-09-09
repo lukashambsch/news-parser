@@ -16,6 +16,6 @@ func main() {
 	os.RemoveAll(scraper.ZipDir)
 
 	//scraper.Scrape(URL)
-	doc := parser.ParseXML("parser/test.xml")
-	store.SetDocument(doc)
+	post := parser.ParseXML("parser/test.xml")
+	store.SetPost(post)
 }

@@ -2,14 +2,13 @@ package parser
 
 import (
 	"encoding/xml"
-	//"fmt"
 	"os"
 
-	"github.com/lukashambsch/news-parser/store"
+	"github.com/lukashambsch/news-parser/models"
 )
 
-func ParseXML(path string) store.Document {
-	var doc store.Document
+func ParseXML(path string) models.Post {
+	var post models.Post
 	f, _ := os.Open(path)
 	decoder := xml.NewDecoder(f)
 
@@ -22,11 +21,10 @@ func ParseXML(path string) store.Document {
 		switch se := t.(type) {
 		case xml.StartElement:
 			if se.Name.Local == "document" {
-				decoder.DecodeElement(&doc, &se)
+				decoder.DecodeElement(&post, &se)
 			}
 		}
 	}
 
-	//fmt.Printf("%#v", doc)
-	return doc
+	return post
 }

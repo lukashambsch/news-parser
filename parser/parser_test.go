@@ -4,11 +4,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/lukashambsch/news-parser/models"
 	"github.com/lukashambsch/news-parser/parser"
-	"github.com/lukashambsch/news-parser/store"
 )
 
-var expected store.Document = store.Document{
+var expected models.Post = models.Post{
 	Type:            "mainstream",
 	Forum:           "http://www.dailymail.co.uk/sport/index.rss",
 	ForumTitle:      "Sport | Mail Online",

@@ -1,12 +1,6 @@
-package store
+package models
 
-import (
-	"fmt"
-
-	"github.com/garyburd/redigo/redis"
-)
-
-type Document struct {
+type Post struct {
 	Type            string  `xml:"type"`
 	Forum           string  `xml:"forum"`
 	ForumTitle      string  `xml:"forum_title"`
@@ -27,16 +21,4 @@ type Document struct {
 	ExternalLinks   string  `xml:"external_links"`
 	Country         string  `xml:"country"`
 	MainImage       string  `xml:"main_image"`
-}
-
-func SetDocument(document Document) {
-	_, err := Store.Do("SETNX", document.PostID, document)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fromRedis, err := redis.String(Store.Do("GET", document.PostID))
-	if err != nil {
-		fmt.Println("Key not found")
-	}
-	fmt.Println(fromRedis)
 }

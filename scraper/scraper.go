@@ -23,7 +23,7 @@ func Scrape(URL string) {
 	paths := GetZipLinks(URL)
 
 	for i, path := range paths[0:1] {
-		fmt.Println(fmt.Sprintf("Downloading file %d at %s", i+1, path))
+		fmt.Printf("Downloading file %d at %s\n", i+1, path)
 
 		split := strings.Split(path, "/")
 		zipPath := split[len(split)-1]

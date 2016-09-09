@@ -16,8 +16,5 @@ func main() {
 	os.RemoveAll(scraper.ZipDir)
 
 	scraper.Scrape(URL)
-	//post := parser.ParseXML("parser/test.xml")
-	//store.SetPost(post)
-	//store.Store.Do("FLUSHDB")
 	parser.ParseAllXML(scraper.XMLDir)
 }

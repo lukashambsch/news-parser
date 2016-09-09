@@ -10,16 +10,14 @@ import (
 	"github.com/lukashambsch/news-parser/store"
 )
 
-func visit(path string, f os.FileInfo, err error) error {
-	if strings.Contains(path, ".xml") {
-		post := ParseXML(path)
-		store.SetPost(post)
-	}
-	return nil
-}
-
 func ParseAllXML(src string) {
-	filepath.Walk(src, visit)
+	filepath.Walk(src, func(path string, f os.FileInfo, err error) error {
+		if strings.Contains(path, ".xml") {
+			post := ParseXML(path)
+			store.SetPost(post)
+		}
+		return nil
+	})
 }
 
 func ParseXML(path string) models.Post {

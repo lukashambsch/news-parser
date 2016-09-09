@@ -4,17 +4,30 @@ import (
 	"encoding/xml"
 	"os"
 	"path/filepath"
-	"strings"
+	"sync"
 
 	"github.com/lukashambsch/news-parser/models"
 	"github.com/lukashambsch/news-parser/store"
 )
 
+func ingest(path string, wg *sync.WaitGroup, throttle chan int) {
+	defer wg.Done()
+
+	post := ParseXML(path)
+	store.SetPost(post)
+	<-throttle
+}
+
 func ParseAllXML(src string) {
+	var wg sync.WaitGroup
+	throttle := make(chan int, 100)
+
 	filepath.Walk(src, func(path string, f os.FileInfo, err error) error {
-		if strings.Contains(path, ".xml") {
-			post := ParseXML(path)
-			store.SetPost(post)
+		if !f.IsDir() {
+			throttle <- 1
+			wg.Add(1)
+			go ingest(path, &wg, throttle)
+			wg.Wait()
 		}
 		return nil
 	})

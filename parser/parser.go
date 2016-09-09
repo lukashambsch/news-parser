@@ -2,6 +2,7 @@ package parser
 
 import (
 	"encoding/xml"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sync"
@@ -19,6 +20,8 @@ func ingest(path string, wg *sync.WaitGroup, throttle chan int) {
 }
 
 func ParseAllXML(src string) {
+	fmt.Println("Parsing xml files.")
+
 	var wg sync.WaitGroup
 	throttle := make(chan int, 100)
 

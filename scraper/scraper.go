@@ -22,8 +22,8 @@ func Scrape(URL string) {
 	throttle := make(chan int, 5)
 	paths := GetZipLinks(URL)
 
-	for i, path := range paths[0:1] {
-		fmt.Printf("Downloading file %d at %s\n", i+1, path)
+	for _, path := range paths[0:1] {
+		fmt.Printf("Downloading %s\n", path)
 
 		split := strings.Split(path, "/")
 		zipPath := split[len(split)-1]
@@ -58,7 +58,7 @@ func Download(path string, zipPath string, wg *sync.WaitGroup, throttle chan int
 	outputPath := fmt.Sprintf("%s/%s", XMLDir, dirName)
 	Unzip(zipPath, outputPath)
 
-	fmt.Println(fmt.Sprintf("Finished downloading %s", path))
+	fmt.Println(fmt.Sprintf("Finished downloading %s\n", path))
 	<-throttle
 }
 
@@ -69,7 +69,7 @@ func GetZipLinks(URL string) []string {
 	doc.Find("table tr td a").Each(func(i int, s *goquery.Selection) {
 		href, _ := s.Attr("href")
 
-		if strings.Contains(href, "zip") {
+		if strings.Contains(href, ".zip") {
 			hrefs = append(hrefs, fmt.Sprintf("%s%s", URL, href))
 		}
 	})

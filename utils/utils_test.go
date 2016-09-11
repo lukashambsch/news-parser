@@ -1,17 +1,17 @@
-package scraper_test
+package utils_test
 
 import (
 	"os"
 	"testing"
 
-	"github.com/lukashambsch/news-parser/scraper"
+	"github.com/lukashambsch/news-parser/utils"
 )
 
 func TestUnzip(t *testing.T) {
 	expectedPath := "./test/test.xml"
 	tmpDir := "./test"
 
-	scraper.Unzip("test.zip", tmpDir)
+	utils.Unzip("test.zip", tmpDir)
 
 	_, err := os.Stat(expectedPath)
 	if os.IsNotExist(err) {

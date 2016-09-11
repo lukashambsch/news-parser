@@ -17,12 +17,16 @@ import (
 const XMLDir = "xmls"
 const ZipDir = "zips"
 
-func Scrape(URL string) {
+func Scrape(URL string) error {
 	var wg sync.WaitGroup
 	throttle := make(chan int, 5)
 	paths := GetZipLinks(URL)
 
-	for _, path := range paths[0:1] {
+    if len(paths) == 0 {
+        return fmt.Errorf("Error scraping URL. (Page is not in the expected format or there are no links.)")
+    }
+
+    for _, path := range paths {
 		fmt.Printf("Downloading %s\n", path)
 
 		split := strings.Split(path, "/")
@@ -33,6 +37,7 @@ func Scrape(URL string) {
 		go Download(path, fmt.Sprintf("%s/%s", ZipDir, zipPath), &wg, throttle)
 	}
 	wg.Wait()
+    return nil
 }
 
 func Download(path string, zipPath string, wg *sync.WaitGroup, throttle chan int) {

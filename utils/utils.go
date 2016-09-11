@@ -7,6 +7,9 @@ import (
     "path/filepath"
 )
 
+const XMLDir = "xmls"
+const ZipDir = "zips"
+
 // Used function from http://stackoverflow.com/questions/20357223/easy-way-to-unzip-file-with-golang
 func Unzip(src, dest string) error {
     // create zip reader
@@ -60,4 +63,9 @@ func Unzip(src, dest string) error {
 	}
 
 	return nil
+}
+
+func Clean() {
+    os.RemoveAll(XMLDir)
+    os.RemoveAll(ZipDir)
 }
